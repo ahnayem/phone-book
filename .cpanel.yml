@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/cuorxhrc/tms.aurorait-21.com/
+    - /bin/cp -R * $DEPLOYPATH
