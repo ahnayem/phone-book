@@ -11,26 +11,8 @@ use Session;
 // setting model
 use App\Models\Setting\SiteSetting;
 
-// category model
-use App\Models\Category\EventCategory;
-
-// event model
-use App\Models\Event\OrganizeEvent;
-
-// gallery model
-use App\Models\Event\Gallery;
-
-// contact model
-use App\Models\Event\Contact;
-
-// slider model
-use App\Models\Event\Slider;
-
-// speaker model
-use App\Models\Event\KeyNoteSpeaker;
-
-// testimonial model
-use App\Models\Event\Testimonial;
+// phonebook model
+use App\Models\PhoneBook\PhoneBook;
 
 class DashboardController extends Controller
 {
@@ -51,20 +33,35 @@ class DashboardController extends Controller
      */
     public function dashboard()
     {
-        $total_category = EventCategory::count();
-        $total_event = OrganizeEvent::count();
-        $total_gallery = Gallery::count();
-        $total_contact = Contact::count();
-        $total_speaker_member = KeyNoteSpeaker::count();
-        $events = OrganizeEvent::whereBetween('date',[Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->get();
+        $users = User::get();
+        $contacts = PhoneBook::get();
+
+        $total_user = 0;
+        $total_user_this_week = 0;
+        
+
+        if(auth()->user()->hasRole('Admin')){
+
+            $total_user = $users->where('is_admin', '0')->count();
+            $total_user_this_week = $users->whereBetween('date',[Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
+            
+            $total_contact = $contacts->count();
+            $total_contact_added_this_week = $contacts->whereBetween('date',[Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
+            
+            $latest_5 = $users->latest()->take(5);
+
+        } else{
+            $total_contact = $contacts->where('user_id', auth()->user()->id)->get();
+            $total_contact_added_this_week = $contacts->where('user_id', auth()->user()->id)->whereBetween('date',[Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
+            $latest_5 = $contacts->where('user_id', auth()->user()->id)->latest()->take(5);
+        }
 
         return view('dashboard.index', compact(
-            'events',
-            'total_category',
-            'total_event',
-            'total_gallery',
+            'total_user',
+            'total_user_this_week',
             'total_contact',
-            'total_speaker_member',
+            'total_contact_added_this_week',
+            'latest_5',
         ));
         
     }

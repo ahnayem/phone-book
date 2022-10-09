@@ -9,6 +9,7 @@
         <h1>Dashboard</h1>
     </div>
     <div class="row">
+        @role('Admin')
         <div class="col-lg-3 col-md-6 col-sm-6 col-12">
             <div class="card card-statistic-1">
                 <div class="card-icon bg-danger">
@@ -16,10 +17,10 @@
                 </div>
                 <div class="card-wrap">
                     <div class="card-header">
-                        <h4>Event Category</h4>
+                        <h4>Total User</h4>
                     </div>
                     <div class="card-body">
-                        {{ $total_category }}
+                        {{ $total_user }}
                     </div>
                 </div>
             </div>
@@ -31,40 +32,41 @@
                 </div>
                 <div class="card-wrap">
                     <div class="card-header">
-                        <h4>Total Event</h4>
+                        <h4>Total User <small>(This week)</small></h4>
                     </div>
                     <div class="card-body">
-                        {{ $total_event }}
+                        {{ $total_user_this_week }}
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        @endrole
+        <div class="@hasrole('Admin') col-lg-3 @else col-lg-6 @endhasrole col-md-6 col-sm-6 col-12">
             <div class="card card-statistic-1">
                 <div class="card-icon bg-warning">
                     <i class="far fa-images"></i>
                 </div>
                 <div class="card-wrap">
                     <div class="card-header">
-                        <h4>Gallery Item</h4>
+                        <h4>Total Contact</h4>
                     </div>
                     <div class="card-body">
-                        {{ $total_gallery }}
+                        {{ $total_contact }}
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        <div class="@hasrole('Admin') col-lg-3 @else col-lg-6 @endhasrole col-md-6 col-sm-6 col-12">
             <div class="card card-statistic-1">
                 <div class="card-icon bg-success">
                     <i class="fas fa-newspaper"></i>
                 </div>
                 <div class="card-wrap">
                     <div class="card-header">
-                        <h4>Blog</h4>
+                        <h4>Total Contact <small>(This week)</small></h4>
                     </div>
                     <div class="card-body">
-                        #
+                        {{ $total_contact_added_this_week }}
                     </div>
                 </div>
             </div>
@@ -72,48 +74,36 @@
     </div>
 
     <div class="row">
+        @role('Admin')
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4>Upcoming Events <small>(This week)</small></h4>
+                    <h4>Recent User <small>(This week)</small></h4>
                     <div class="card-header-action">
-                        <a href="{{ route('admin.event.index') }}" class="btn btn-danger">View More <i class="fas fa-chevron-right"></i></a>
+                        <a href="{{ route('admin.user.index') }}" class="btn btn-danger">View More <i class="fas fa-chevron-right"></i></a>
                     </div>
                 </div>
                 <div class="card-body p-0">
-                    <div class="table-responsive table-events">
+                    <div class="table-responsive table-users">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Title</th>
-                                    <th>Location</th>
-                                    <th>Plan</th>
-                                    <th>Event Date</th>
-                                    <th>Action</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Member Since</th>
                                 </tr>
                             </thead>
                             <tbody>
 
-                                @foreach ($events as $key => $event)
+                                @foreach ($latest_5 as $key => $contact)
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
 
-                                        <td>{{ $event->title }}</td>
+                                        <td>{{ $contact->name }}</td>
 
-                                        <td>{!! $event->location !!}</td>
-                                        <td>{{ $event->plan }}</td>
-                                        <td>{{ Carbon\Carbon::parse($event->date)->format('jS M, Y') }}</td>
-                                        <td>
-
-                                            <button class="btn btn-primary event-details"
-                                                data-event-id="{{ $event->id }}"><i class="fas fa-eye"></i></button>
-                                            <a href="{{ route('admin.event.edit', $event->id) }}"
-                                                class="btn btn-icon btn-warning"><i class="far fa-edit"></i></a>
-                                            <a href="{{ route('admin.event.destroy', $event->id) }}"
-                                                class="btn btn-icon btn-danger" onclick="return confirm('Are you sure?')"><i
-                                                    class="fas fa-times"></i></a>
-                                        </td>
+                                        <td>{!! $contact->email !!}</td>
+                                        <td>{{ Carbon\Carbon::parse($contact->created_at)->format('jS M, Y') }}</td>
                                     </tr>
                                 @endforeach
 
@@ -124,63 +114,55 @@
                 </div>
             </div>
         </div>
+        @endrole
 
-        <div class="modal fade" tabindex="-1" role="dialog" id="event-modal">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Event Details</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+        @role('User')
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Recent Contact <small>(This week)</small></h4>
+                    <div class="card-header-action">
+                        <a href="{{ route('phonebook.index') }}" class="btn btn-danger">View More <i class="fas fa-chevron-right"></i></a>
                     </div>
-                    <div class="modal-body">
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive table-users">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Phone</th>
+                                    <th>Email</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                        <hr>
-                        
-                        <h5 id="event-title"></h5>
-                        <p><span><strong>Plan: </strong></span><span id="event-plan"></span></p>
-                        <p><span><strong>Location: </strong></span><span id="event-location"></span></p>
-                        <small><strong>Event Date: </strong> <span id="event-date"></span></small>
-                        <hr>
-                        <p id="event-description"></p>
-                        <hr>
-                    </div>
-                    <div class="modal-footer bg-whitesmoke br">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                @foreach ($latest_5 as $key => $contact)
+                                    <tr>
+                                        <td>{{ $key + 1 }}</td>
+
+                                        <td>{{ $contact->name }}</td>
+                                        <td>{{ $contact->phone }}</td>
+                                        <td>{!! $contact->email !!}</td>
+                                        <td>{{ Carbon\Carbon::parse($contact->created_at)->format('jS M, Y') }}</td>
+                                    </tr>
+                                @endforeach
+
+                            </tbody>
+
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
+        @endrole
 
     </div>
 @endsection
 
 
 @push('js')
-<script>
-    $(document).ready(function() {
-        $("body").on("click", ".event-details", function() {
 
-            var event_id = $(this).data("event-id");
-
-            $.ajax({
-                type: 'GET',
-                url: "{{ route('admin.event.get_event') }}",
-                data: {
-                    'id': event_id
-                },
-                success: function(data) {
-                    data = JSON.parse(data);
-                    $('#event-modal').modal('show');
-                    $('#event-title').text(data.title);
-                    $('#event-date').text(data.date);
-                    $('#event-location').html(data.location);
-                    $('#event-plan').html(data.plan);
-                    $('#event-description').html(data.description);
-                },
-            });
-        });
-    });
-</script>
 @endpush
