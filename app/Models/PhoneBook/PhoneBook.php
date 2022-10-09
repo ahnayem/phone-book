@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Event;
+namespace App\Models\PhoneBook;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +11,7 @@ class PhoneBook extends Model
     use HasFactory, Loggable;
 
     protected $fillable = [
+        'name',
         'phone',
         'email',
         'photo',

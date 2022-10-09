@@ -18,16 +18,11 @@ use Illuminate\Support\Facades\Storage;
 
 class PhoneBookController extends Controller
 {
-    public function __construct()
-	{
-		$this->middleware(['role:Admin|User']);
-	}
-
     
     public function index(Request $request)
 	{
 
-        $contacts = PhoneBook::get();
+        $contacts = PhoneBook::where('user_id', auth()->user()->id)->latest()->get();
 
         return view('dashboard.phonebook.index', compact('contacts'));
 
@@ -41,39 +36,35 @@ class PhoneBookController extends Controller
     public function store(Request $request)
 	{
 		$rules = [
-            'title' 			=> 'required',
-            'description' 		=> 'required',
-            'faq_description' 	=> 'required',
-            'plan' 			    => 'required',
-            'location' 			=> 'required',
-            'date' 		        => 'required|date',
-            'photo' 		    => 'required|mimes:jpeg,jpg,png|max:2048',
+            'name' 			=> 'required',
+            'email' 		=> 'required|email',
+            'phone' 	    => 'required',
+            'photo' 		=> 'required|mimes:jpeg,jpg,png|max:2048',
         ];
 
         $messages = [
-            'title.required' 		    => 'The title field is required.',
-            'description.required' 	    => 'The description field is required.',
-            'faq_description.required' 	=> 'The faq description field is required.',
-            'plan.required'   	        => 'The plan field is required',
-            'location.required'   	    => 'The location field is required',
-            'date.required'   	        => 'The date field is required',
-            'date.date'   	            => 'The date must be date type',
-            'photo.required'   	        => 'The photo field is required',
-            'photo.mimes'   		    => 'The photo must be image(jpeg,jpg,png)',
-            'photo.max'   		        => 'The photo must less than 2 MB',
+            'name.required' 	=> 'The name field is required.',
+            'email.required' 	=> 'The email field is required.',
+            'email.email' 	    => 'The email must be an email.',
+            'phone.required'   	=> 'The phone field is required',
+            'photo.required'   	=> 'The photo field is required',
+            'photo.mimes'       => 'The photo must be image(jpeg,jpg,png)',
+            'photo.max'   		=> 'The photo must less than 2 MB',
         ];
 
         $validate = $this->validate($request, $rules, $messages);
 
         $path = Storage::disk('public')->put('backend/contact', $request->photo);
 
-		$validate['photo'] 		 = $path;
+		$validate['photo'] = $path;
+		$validate['user_id'] = auth()->user()->id;
+
 
 		try {
             PhoneBook::create($validate);
 
-			$success_msg = __('contact stored!');
-			return redirect()->route('admin.contact.index')->with('success',$success_msg);
+			$success_msg = __('Contact stored!');
+			return redirect()->route('phonebook.index')->with('success',$success_msg);
 
 		} catch (Exception $e) {
 			$error_msg = __('Something went wrong!');
@@ -95,25 +86,19 @@ class PhoneBookController extends Controller
         $contact = PhoneBook::find($id);
 
         $rules = [
-            'title' 			=> 'required',
-            'description' 		=> 'required',
-            'faq_description' 	=> 'required',
-            'plan' 			    => 'required',
-            'location' 			=> 'required',
-            'date' 		        => 'required|date',
-            'photo' 		    => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
+            'name' 			=> 'required',
+            'email' 		=> 'required|email',
+            'phone' 	    => 'required',
+            'photo' 		=> 'nullable|mimes:jpeg,jpg,png|max:2048',
         ];
 
         $messages = [
-            'title.required' 		    => 'The title field is required.',
-            'description.required' 	    => 'The description field is required.',
-            'faq_description.required' 	=> 'The faq description field is required.',
-            'plan.required'   	        => 'The plan field is required',
-            'location.required'   	    => 'The location field is required',
-            'date.required'   	        => 'The date field is required',
-            'date.date'   	            => 'The date must be date type',
-            'photo.mimes'   		    => 'The photo must be image(jpeg,jpg,png)',
-            'photo.max'   		        => 'The photo must less than 2 MB',
+            'name.required' 	=> 'The name field is required.',
+            'email.required' 	=> 'The email field is required.',
+            'email.email' 	    => 'The email must be an email.',
+            'phone.required'   	=> 'The phone field is required',
+            'photo.mimes'       => 'The photo must be image(jpeg,jpg,png)',
+            'photo.max'   		=> 'The photo must less than 2 MB',
         ];
 
 
@@ -121,8 +106,8 @@ class PhoneBookController extends Controller
 
         if($request->file('photo')){
 
-			if(Storage::disk('public')->exists($slider->photo)){
-				Storage::disk('public')->delete($slider->photo);
+			if(Storage::disk('public')->exists($contact->photo)){
+				Storage::disk('public')->delete($contact->photo);
 			}
 
 			$path = Storage::disk('public')->put('backend/contact', $request->file('photo'));
@@ -130,14 +115,14 @@ class PhoneBookController extends Controller
 			$validate['photo'] = $path;
 			
 		} else{
-			$validate['photo'] = $slider->photo;
+			$validate['photo'] = $contact->photo;
 		}
 
 		try {
             $contact->update($validate);
             
-			$success_msg = __('contact updated!');
-			return redirect()->route('admin.contact.index')->with('success',$success_msg);
+			$success_msg = __('Contact updated!');
+			return redirect()->route('phonebook.index')->with('success',$success_msg);
 
 		} catch (Exception $e) {
 			$error_msg = __('Something went wrong!');
@@ -151,31 +136,13 @@ class PhoneBookController extends Controller
         $getcontact = PhoneBook::find($id);
 		try {
 			$getcontact->delete();
-			$success_msg = __('contact deleted!');
-			return redirect()->route('admin.contact.index')->with('success',$success_msg);
+			$success_msg = __('Contact deleted!');
+			return redirect()->route('phonebook.index')->with('success',$success_msg);
 		} catch (Exception $e) {
 			$error_msg = __('Something went wrong!');
-			return redirect()->route('admin.contact.index')->with('error',$error_msg);
+			return redirect()->route('phonebook.index')->with('error',$error_msg);
 		}
 
-	}
-
-    public function get_contact(Request $request)
-	{
-		$contact = PhoneBook::find($request->id);
-		$date = date_create($contact->date);
-        $data = [
-            'title' => $contact->title,
-            'location' => strip_tags($contact->location),
-            'plan' => $contact->plan,
-            'description' => strip_tags($contact->description),
-            'date' => date_format($date, 'jS F, Y'),
-        ];
-
-        $data = json_encode($data);
-
-        
-		return $data;
 	}
 
     public function favourite_update(Request $request)
@@ -193,7 +160,14 @@ class PhoneBookController extends Controller
 
         return response()->json(['success'=> $msg]);
         
-        
+	}
+
+    public function favourite_list(Request $request)
+	{
+
+        $contacts = PhoneBook::where('user_id', auth()->user()->id)->where('favourite', 'Active')->latest()->get();
+
+        return view('dashboard.phonebook.favourite', compact('contacts'));
 
 	}
 

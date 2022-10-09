@@ -27,9 +27,6 @@
             <div class="col-12 col-md-12 col-lg-12">
                 <div class="card">
                     <div class="table-responsive p-2">
-                        <div class="my-2 text-center text-uppercase">
-                            <a href="{{ route('admin.user.create') }}" class="btn btn-icon icon-left btn-primary"><i class="far fa-user"></i> Add User</a>
-                        </div>
 
                         <table id="users-table" class="table table-striped" style="width:100%">
                             <thead>
@@ -52,7 +49,6 @@
                                     <td>{{ $user->email }}</td>
                                     <td>{{ $user->phone }}</td>
                                     <td>
-                                        <a href="{{ route('admin.user.edit', $user->id) }}" class="btn btn-icon btn-primary"><i class="far fa-edit"></i></a>
                                         <a href="{{ route('admin.user.destroy', $user->id) }}" class="btn btn-icon btn-danger" onclick="return confirm('Are you sure?')"><i class="fas fa-times"></i></a>
                                     </td>
                                 </tr>

@@ -33,8 +33,8 @@ class DashboardController extends Controller
      */
     public function dashboard()
     {
-        $users = User::get();
-        $contacts = PhoneBook::get();
+        $users = User::where('is_admin', '0')->latest()->get();
+        $contacts = PhoneBook::latest()->get();
 
         $total_user = 0;
         $total_user_this_week = 0;
@@ -42,18 +42,18 @@ class DashboardController extends Controller
 
         if(auth()->user()->hasRole('Admin')){
 
-            $total_user = $users->where('is_admin', '0')->count();
+            $total_user = $users->count();
             $total_user_this_week = $users->whereBetween('date',[Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
             
             $total_contact = $contacts->count();
             $total_contact_added_this_week = $contacts->whereBetween('date',[Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
             
-            $latest_5 = $users->latest()->take(5);
+            $latest_5 = $users->take(5);
 
         } else{
-            $total_contact = $contacts->where('user_id', auth()->user()->id)->get();
+            $total_contact = $contacts->where('user_id', auth()->user()->id)->count();
             $total_contact_added_this_week = $contacts->where('user_id', auth()->user()->id)->whereBetween('date',[Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
-            $latest_5 = $contacts->where('user_id', auth()->user()->id)->latest()->take(5);
+            $latest_5 = $contacts->where('user_id', auth()->user()->id)->take(5);
         }
 
         return view('dashboard.index', compact(

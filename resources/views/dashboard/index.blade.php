@@ -13,7 +13,7 @@
         <div class="col-lg-3 col-md-6 col-sm-6 col-12">
             <div class="card card-statistic-1">
                 <div class="card-icon bg-danger">
-                    <i class="far fa-newspaper"></i>
+                    <i class="fas fa-user"></i>
                 </div>
                 <div class="card-wrap">
                     <div class="card-header">
@@ -28,7 +28,7 @@
         <div class="col-lg-3 col-md-6 col-sm-6 col-12">
             <div class="card card-statistic-1">
                 <div class="card-icon bg-primary">
-                    <i class="fas fa-calendar-check"></i>
+                    <i class="fas fa-user-plus"></i>
                 </div>
                 <div class="card-wrap">
                     <div class="card-header">
@@ -44,7 +44,7 @@
         <div class="@hasrole('Admin') col-lg-3 @else col-lg-6 @endhasrole col-md-6 col-sm-6 col-12">
             <div class="card card-statistic-1">
                 <div class="card-icon bg-warning">
-                    <i class="far fa-images"></i>
+                    <i class="fas fa-phone"></i>
                 </div>
                 <div class="card-wrap">
                     <div class="card-header">
@@ -59,7 +59,7 @@
         <div class="@hasrole('Admin') col-lg-3 @else col-lg-6 @endhasrole col-md-6 col-sm-6 col-12">
             <div class="card card-statistic-1">
                 <div class="card-icon bg-success">
-                    <i class="fas fa-newspaper"></i>
+                    <i class="fas fa-phone"></i>
                 </div>
                 <div class="card-wrap">
                     <div class="card-header">
@@ -116,7 +116,7 @@
         </div>
         @endrole
 
-        @role('User')
+        @if (auth()->user()->is_admin == '0')
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
@@ -134,6 +134,7 @@
                                     <th>Name</th>
                                     <th>Phone</th>
                                     <th>Email</th>
+                                    <th>Special</th>
                                     <th>Date</th>
                                 </tr>
                             </thead>
@@ -145,7 +146,12 @@
 
                                         <td>{{ $contact->name }}</td>
                                         <td>{{ $contact->phone }}</td>
-                                        <td>{!! $contact->email !!}</td>
+                                        <td>{{ $contact->email }}</td>
+                                        <td>
+                                            @if ($contact->favourite == 'Active')
+                                                <span class="badge badge-primary text-uppercase">Favourite</span>
+                                            @endif
+                                        </td>
                                         <td>{{ Carbon\Carbon::parse($contact->created_at)->format('jS M, Y') }}</td>
                                     </tr>
                                 @endforeach
@@ -157,7 +163,7 @@
                 </div>
             </div>
         </div>
-        @endrole
+        @endif
 
     </div>
 @endsection

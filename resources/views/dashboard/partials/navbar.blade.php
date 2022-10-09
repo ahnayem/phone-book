@@ -26,49 +26,7 @@ $diff_time = $now_time->diffForHumans();
 
 
     <ul class="navbar-nav navbar-right">
-        {{-- @role('Admin')
-            <li class="dropdown dropdown-list-toggle">
-                <a href="#" data-toggle="dropdown" class="nav-link notification-toggle nav-link-lg beep"><i
-                        class="far fa-bell"></i>
-                </a>
-                <div class="dropdown-menu dropdown-list dropdown-menu-right">
-                    <div class="dropdown-header">Notifications
-                        @if ($alert_quantity_unread->count() > 0)
-                            <div class="float-right">
-                                <a href="{{ route('dashboard.mark_as_read') }}">Mark All As Read</a>
-                            </div>
-                        @endif
-                    </div>
-                    <div class="dropdown-list-content dropdown-list-icons h-auto">
-                        @foreach ($alert_quantity_unread as $unread)
-                            <a href="#" class="dropdown-item">
-                                <div class="dropdown-item-icon bg-info text-white">
-                                    <i class="fas fa-bell"></i>
-                                </div>
-                                <div class="dropdown-item-desc">
-                                    <strong>{{ $unread->product->name }}</strong> <small> quantity is now bellow 20</small>
-                                    <div class="time">{{ $unread->created_at->diffForHumans() }}</div>
-                                </div>
-                            </a>
-                        @endforeach
-
-                        @if ($alert_quantity_unread->count() == 0)
-                            <a class="dropdown-item">
-                                <div class="dropdown-item-desc">
-                                    There is no unread notication right now.
-                                </div>
-                            </a>
-                        @endif
-
-                    </div>
-                    <div class="dropdown-footer text-center">
-                        <a href="#">View All <i class="fas fa-chevron-right"></i></a>
-                    </div>
-                </div>
-            </li>
-        @endrole --}}
-
-
+      
         <li class="dropdown"><a href="#" data-toggle="dropdown"
                 class="nav-link dropdown-toggle nav-link-lg nav-link-user">
                 <img alt="image"

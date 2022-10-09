@@ -7,7 +7,7 @@ $setting = \App\Models\Setting\SiteSetting::first();
             <a href="{{ route('dashboard') }}">{{ $setting->title }}</a>
         </div>
         <div class="sidebar-brand sidebar-brand-sm">
-            {{-- <a href="index.html">{{ $setting->title }}</a> --}}
+            {{-- <a href="#">{{ $setting->title }}</a> --}}
             <img src="/storage/{{ $setting->favicon }}" alt="{{ $setting->title }}" height="50px" width="50px">
         </div>
         <ul class="sidebar-menu">
@@ -21,13 +21,13 @@ $setting = \App\Models\Setting\SiteSetting::first();
 
 
             <li class="nav-item dropdown {{ request()->is('dashboard/phone-book/*') ? 'active' : '' }}">
-                <a href="#" class="nav-link has-dropdown"><i class="fas fa-calendar-check"></i>
+                <a href="#" class="nav-link has-dropdown"><i class="fas fa-address-book"></i>
                     <span>Phone Book</span></a>
                 <ul class="dropdown-menu">
                     <li class="{{ request()->is('dashboard/phone-book/index') ? 'active' : '' }}"><a class="nav-link"
                             href="{{ route('phonebook.index') }}">All Contact</a></li>
-                    <li class="{{ request()->is('dashboard/phone-book/favourite') ? 'active' : '' }}"><a class="nav-link"
-                            href="#">Favourite Contact</a></li>
+                    <li class="{{ request()->is('dashboard/phone-book/favourite-list') ? 'active' : '' }}"><a class="nav-link"
+                            href="{{ route('phonebook.favourite_list') }}">Favourite Contact</a></li>
                 </ul>
             </li>
 
@@ -38,13 +38,11 @@ $setting = \App\Models\Setting\SiteSetting::first();
                         <span>Website Setting</span></a>
                     <ul class="dropdown-menu">
                         <li class="{{ request()->is('dashboard/setting/sitesetting/dashboard') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin.setting.sitesetting.dashboard') }}">Dashboard Setting</a></li>
-
-                        <li class="{{ request()->is('dashboard/setting/sitesetting/frontend') ? 'active' : '' }}"><a class="nav-link" href="{{ route('admin.setting.sitesetting.frontend') }}">Frontend Setting</a></li>
                     </ul>
                 </li>
             @endrole
 
-            {{-- @role('Admin')
+            @role('Admin')
                 <li class="menu-header">User Management</li>
                 <li class="nav-item dropdown {{ request()->is('dashboard/user/*') ? 'active' : '' }} mb-5">
                     <a href="#" class="nav-link has-dropdown"><i class="far fa-user"></i>
@@ -53,21 +51,9 @@ $setting = \App\Models\Setting\SiteSetting::first();
                         <li class="nav-link {{ request()->is('dashboard/user/index') ? 'active' : '' }}">
                             <a href="{{ route('admin.user.index') }}">All User</a>
                         </li>
-
-                        <li class="nav-link {{ request()->is('dashboard/user/create') ? 'active' : '' }}">
-                            <a href="{{ route('admin.user.create') }}">Register Staff</a>
-                        </li>
-
-                        <li class="nav-link {{ request()->is('dashboard/user/role/index') ? 'active' : '' }}">
-                            <a href="{{ route('admin.user.role.index') }}">Role</a>
-                        </li>
-
-                        <li class="nav-link {{ request()->is('dashboard/user/permission/index') ? 'active' : '' }}">
-                            <a href="{{ route('admin.user.permission.index') }}">Permission</a>
-                        </li>
                     </ul>
                 </li>
-            @endrole --}}
+            @endrole
 
 
         </ul>
