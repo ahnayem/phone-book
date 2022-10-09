@@ -1,8 +1,7 @@
 <h1 align="center">Phone Book</h1>
 
 
-<p align="center"><a href="#" target="_blank"><img src="https://i.postimg.cc/VLdr3kDN/logo.png" width="200"></a></p>
-
+<p align="center"><a href="#" target="_blank"><img src="https://i.postimg.cc/vZsSZTDQ/images-v4.png" width="200"></a></p>
 <p align="center">
 <a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
